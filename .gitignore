@@ -1,0 +1,9 @@
+generation_outputs/
+outputs/
+archive/
+__pycache__/
+pytest_cache/
+
+**/logs.txt
+MATH/
+**/*sandbox*/
