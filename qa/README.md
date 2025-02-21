@@ -1,4 +1,4 @@
-## 1A. Generating CHASE-QA
+## A. Generating CHASE-QA
 
 ### Generate scenarios
 
@@ -101,7 +101,7 @@ Here, the `threshold` parameter controls the number of random examples from whic
 The above command will generate the `programmatic_data_modified_verified_cleaned.tsv` file which is the final generated data file.
 
 
-## 1B. Solving CHASE-QA
+## B. Solving CHASE-QA
 
 We will show an example of using the Llama-3.3-70B model to solve the CHASE-QA examples.
 
@@ -127,7 +127,7 @@ At `qa/`:
 $ python evaluator.py -run_name chase_qa_llama -data chase_qa -model_type chat -model gpt-4o
 ```
 
-## 1C. Viewing CHASE-QA
+## C. Viewing CHASE-QA
 
 If you want to manually review say the "5th" example from CHASE-QA,
 
