@@ -1,0 +1,108 @@
+Parameters:
+- df1: pandas.DataFrame
+- df2: pandas.DataFrame
+Objectives:
+- Find the two columns in the two dataframes df1 and df2 that have the exact same value for the first 20 rows. 
+- Rename these columns to "same_col". 
+- Merge the two dataframes based on same_col and call it merged_df.
+- Drop all the rows in merged_df which have at least one null value.
+
+Function "merge_on_same_column" in file "column_manipulations.py":
+
+import pandas as pd
+
+def merge_on_same_column(df1, df2):
+	# Step 1: Find the columns in both dataframes that have the exact same values for the first 20 rows
+	common_col = None
+	for col1 in df1.columns:
+		for col2 in df2.columns:
+			if df1[col1][:20].equals(df2[col2][:20]):
+				common_col = (col1, col2)
+				break
+		if common_col:
+			break
+	
+	if not common_col:
+		raise ValueError("No matching columns found in the first 20 rows of the dataframes.")
+	
+	# Step 2: Rename these columns to "same_col"
+	df1.rename(columns={common_col[0]: 'same_col'}, inplace=True)
+	df2.rename(columns={common_col[1]: 'same_col'}, inplace=True)
+	
+	# Step 3: Merge the two dataframes based on "same_col"
+	merged_df = pd.merge(df1, df2, on='same_col')
+	
+	# Step 4: Drop all rows in merged_df which have at least one null value
+	merged_df.dropna(inplace=True)
+	
+	return merged_df
+
+Parameters:
+- data: pandas.DataFrame
+- k: int
+Objectives:
+- In the dataframe "data", find the "frequency" of occurence of rows that have at least one string field with the number of letters divisible by "k". 
+- Also create a new dataframe by removing all such rows from "data", and call it "filtered_df".
+- Return the "frequency" and the "filtered_df".
+
+Function "filter_k_frequency" in file "string_filters.py":
+
+import pandas as pd
+
+def filter_k_frequency(data, k):
+	def has_len_divisible_by_k(row, k):
+		for item in row:
+			if isinstance(item, str) and len(item) % k == 0:
+				return True
+		return False
+
+	removable_mask = data.apply(lambda row: has_len_divisible_by_k(row, k), axis=1)
+
+	frequency = removable_mask.sum()
+
+	filtered_df = data[~removable_mask].reset_index(drop=True)
+
+	return frequency, filtered_df
+
+Parameters:
+- func_file: str
+- class_file: str
+Objective:
+- Open the text file specified by func_file, and create a list of blocks of text that come between adjacent occurences of "def" and "return" in the file.
+- Filter this list to check there is no presence of "class" or "import" keywords in any of the strings. Then sort the list based on the number of lines in the text blocks. Call this list "func_ls".
+- Open the text file specified by class_file, and create a list of blocks of text that come between adjacent occurences of "Class" and "End_Class" in the file. Call this list "class_ls".
+- Return "func_ls" and "class_ls".
+
+Function "get_block_lists" in file "code_parser.py":
+
+def get_block_lists(func_file: str, class_file: str):
+	def extract_blocks(file_path, start_keyword, end_keyword):
+		with open(file_path, 'r') as file:
+			content = file.read()
+		
+		blocks = []
+		start_indices = [i for i in range(len(content)) if content.startswith(start_keyword, i)]
+		end_indices = [i + len(end_keyword) for i in range(len(content)) if content.startswith(end_keyword, i)]
+		
+		for i in range(len(start_indices)):
+			start = start_indices[i]
+			end = end_indices[i] if i < len(end_indices) else len(content)
+			blocks.append(content[start:end])
+		
+		return blocks
+
+	def filter_and_sort_func_ls(func_blocks):
+		filtered_blocks = []
+		for block in func_blocks:
+			if "class" not in block and "import" not in block:
+				filtered_blocks.append(block)
+		
+		sorted_blocks = sorted(filtered_blocks, key=lambda block: block.count('\n'))
+		return sorted_blocks
+	
+	func_blocks = extract_blocks(func_file, "def", "return")
+	func_ls = filter_and_sort_func_ls(func_blocks)
+	
+	class_ls = extract_blocks(class_file, "Class", "End_Class")
+	
+	return func_ls, class_ls

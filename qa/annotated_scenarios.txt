@@ -1,0 +1,14 @@
+USER_PERSONA: College student
+COLLECTION_OF_DOCS: Intranet on the university website
+
+USER_PERSONA: Intern doctor at a hospital
+COLLECTION_OF_DOCS: Encyclopedia of diseases
+
+USER_PERSONA: Immigrant in NYC
+COLLECTION_OF_DOCS: Laws on renting and subletting
+
+USER_PERSONA: HR manager at a top law firm
+COLLECTION_OF_DOCS: Court and newspaper records
+
+USER_PERSONA: Scientist at an NGO
+COLLECTION_OF_DOCS: Government website for Income Tax

@@ -1,0 +1,200 @@
+Parameters:
+- n: Size of Array
+- operations: List of operations to be performed. Each element is a 3-tuple (l, r, k) where k is the number to be added and l and r are indices of the array.
+Objectives:
+- Assume an array of size "n" initialized with zeros.
+- Perform the operations in the list "operations" on the array. For each operation, add the number "k" to all elements in the array from index "l" to index "r" (both inclusive).
+- Return the maximum value in the array after performing all operations.
+
+Function "array_add_manip" in file "array_ops_manipulations.py":
+
+def array_add_manip(n, queries):
+	v = []
+	
+	for operation in queries:
+		a, b, k = operation
+		v.append((a, k))
+		v.append((b + 1, -k))
+	
+	v.sort()
+	
+	mx = 0
+	total = 0
+	
+	for _, value in v:
+		total += value
+		mx = max(mx, total)
+	
+	return mx
+
+Parameters:
+queries: List of queries to be processed. Each query is a 2-tuple (t, x) where t is the type of query and x is the parameter associated with the query.
+Objectives:
+- Process the queries based on their types and parameters.
+- Perform the following operations based on the query type:
+	1. Append a string to the end of the current string.
+	2. Delete the last k characters from the current string.
+	3. Output the k-th character of the current string.
+	4. Undo the last operation (either append or delete).
+
+Function "process_text_editor" in file "text_editors.py":
+
+def process_queries(queries):
+	s = ""
+	last_i = []
+	last_s = []
+	flag = []
+
+	for query in queries:
+		t = query[0]
+
+		if t == 1:
+			# Append a string to s
+			w = query[1]
+			s += w
+			last_i.append(len(w))
+			flag.append(1)
+
+		elif t == 2:
+			# Delete last k characters from s
+			k = query[1]
+			last = s[-k:]
+			last_s.append(last)
+			s = s[:-k]
+			flag.append(2)
+
+		elif t == 3:
+			# Output the k-th character of s
+			k = query[1]
+			print(s[k - 1])
+
+		elif t == 4:
+			# Undo the last operation
+			if flag:
+				l = flag.pop()
+
+				if l == 1 and last_i:
+					k = last_i.pop()
+					s = s[:-k]
+
+				elif l == 2 and last_s:
+					s += last_s.pop()
+
+Parameters:
+- n: Number of nodes in the graph.
+- m: Number of edges in the graph.
+- edges: List of edges in the graph. Each edge is a 3-tuple (X, Y, R) where X and Y are nodes connected by the edge and R is the weight of the edge.
+- S: Starting node for finding the best paths.
+Objectives:
+- Find the weight value of the best and second-best direct paths in terms of distance from the starting node "S" when measured to all other nodes in the graph.
+
+Function "best_paths_to_nodes" in file "node_distances.py":
+
+import heapq
+
+def best_paths_to_nodes(n, m, edges, S):
+	V = [dict() for x in range(n)]
+
+	for i in range(m):
+		X, Y, R = edges[i]
+		X, Y = X - 1, Y - 1
+		if Y not in V[X]:
+			V[X][Y] = R
+		else:
+			V[X][Y] = min(V[X][Y], R)
+
+		if X not in V[Y]:
+			V[Y][X] = R
+		else:
+			V[Y][X] = min(V[Y][X], R)
+
+	dist = [-1 for x in range(n)]
+	visited = [False for x in range(n)]
+	Q = [(0,S)] # use a priority queue
+	dist[S] = 0
+	while Q:
+		mindist, minv = heapq.heappop(Q)
+		if not visited[minv]:
+			for x in V[minv]:
+				if dist[x] == -1: dist[x] = mindist + V[minv][x]
+				else: dist[x] = min(dist[x], mindist + V[minv][x])
+				heapq.heappush(Q, (dist[x], x))
+			visited[minv] = True
+	del dist[S]
+	
+	best = -1
+	second_best = -1
+
+	for x in dist:
+		if x > 0:
+			if x > best:
+				second_best = best
+				best = x
+			elif x > second_best:
+				second_best = x
+
+	return best, second_best
+
+Parameters:
+- n: Number of packets.
+- k: Number of packets to be selected.
+- packets: List of packet sizes.
+Objectives:
+- Calculate the minimum possible unfairness sum for selecting "k" packets from "n" packets.
+- Unfairness sum is defined as the cumulative difference between the sizes of the selected packets. That is, the sum of the differences between the sizes of each possible pair of selected packets.
+
+Function "min_unfairness_sum" in file "unfairness_sum.py":
+
+def min_unfairness_sum(n, k, packets):
+	packets.sort()
+	ps = [0]
+	for i in range(n):
+		ps.append(ps[-1] + packets[i])
+	cur = 0
+	for i in range(k):
+		cur += i * packets[i] - ps[i]
+	ans = cur
+	for i in range(1, n - k + 1):
+		cur -= ps[i + k - 1] - ps[i - 1] - k * packets[i - 1]
+		cur += k * packets[i + k - 1] - ps[i + k] + ps[i]
+		ans = min(ans, cur)
+	return ans
+
+Parameters:
+- N: Number of elements in the array.
+- K: Value of K for which K-sums are provided.
+- k_sums: A sequence of all K-sums with repetitions calculated over the base list.
+Objectives:
+- Calculate the base list of elements of size N for which all K-sums with repetitions are provided. This list will be a non-decreasing sequence of non-negative integers.
+
+Function "get_ls_from_k_sum" in file "k_sums.py":
+
+def get_ls_from_k_sum(N, K, k_sums):
+    S = sorted(k_sums)
+    s = {}
+    d = {}
+    for s in S:
+        if s not in d:
+            d[s] = 0
+        d[s] += 1
+    A = []
+    ns = [[] for i in range(K+1)]
+    ns[0].append(0)
+    A.append(S[-1] / K)
+    d[S[-1]] -= 1
+    S.pop()
+    for i in range(1,K+1):
+        ns[i].append(i*A[0])
+    for i in range(N-1):
+        s = S[-1]
+        while d[s] == 0:
+            S.pop()
+            s = S[-1]
+        x = s - (K-1)*A[0]
+        for j in range(1,K+1):
+            for o in ns[j-1]:
+                ns[j].append(o+x)
+                if j == K:
+                    d[o+x] -= 1
+        A.append(x)
+    return A[::-1]
