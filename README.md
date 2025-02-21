@@ -4,7 +4,7 @@
 <!-- <h5 align="center">Evaluating the In-Context Learning Ability of Large Language Models to Generalize to Novel Interpretations</h5> -->
 
 <p align="center">
-  <a href="https://paper"><img src="http://img.shields.io/badge/Paper-PDF-red.svg"></a>
+  <a href="https://arxiv.org/pdf/2502.14678"><img src="http://img.shields.io/badge/Paper-PDF-red.svg"></a>
   <a href="https://github.com/McGill-NLP/incontext-code-generation/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/License-MIT-green">
   </a>
@@ -14,7 +14,7 @@
 The pace of evolution of Large Language Models (LLMs) necessitates new approaches for rigorous and comprehensive evaluation. Traditional human annotation is increasingly impracticable due to the complexities and costs involved in generating high-quality, challenging problems. In this work, we introduce **CHASE**, a unified framework to synthetically generate challenging problems using LLMs without human involvement.  For a given task, our approach builds a hard problem in a bottom-up manner from simpler components. Moreover, our framework decomposes the generation process into independently verifiable sub-tasks, thereby ensuring a high level of quality and correctness. We implement CHASE to create evaluation benchmarks across three diverse domains: (1) document-based question answering, (2) repository-level code completion, and (3) math reasoning. The performance of state-of-the-art LLMs on these synthetic benchmarks lies in the range of 40-60% accuracy, thereby demonstrating the effectiveness of our framework at generating challenging problems.
 </p>
 <h2 align="center">
-  <img align="center"  src="./images/Fig_main.svg" alt="..." width="800">
+  <img align="center"  src="./images/chase_fig.svg" alt="..." width="800">
 </h2>
 
 
@@ -59,7 +59,7 @@ $ pip install -r requirements.txt
 
 Here, we illustrate running the experiments for generation and solving using GPT-4o-mini, Gemini-1.5-Flash and Llama-3.3-70B.
 
-## IA. Generating CHASE-QA
+## 1A. Generating CHASE-QA
 
 ### Generate scenarios
 
@@ -162,7 +162,7 @@ Here, the `threshold` parameter controls the number of random examples from whic
 The above command will generate the `programmatic_data_modified_verified_cleaned.tsv` file which is the final generated data file.
 
 
-## IB. Solving CHASE-QA
+## 1B. Solving CHASE-QA
 
 We will show an example of using the Llama-3.3-70B model to solve the CHASE-QA examples.
 
@@ -188,7 +188,7 @@ At `qa/`:
 $ python evaluator.py -run_name chase_qa_llama -data chase_qa -model_type chat -model gpt-4o
 ```
 
-## IC. Viewing CHASE-QA
+## 1C. Viewing CHASE-QA
 
 If you want to manually review say the "5th" example from CHASE-QA,
 
@@ -202,7 +202,7 @@ This will create a new directory `readable_data` with a txt file where you will 
 
 
 
-## IIA. Generating CHASE-Code
+## 2A. Generating CHASE-Code
 
 Note: Executing the generation or solving files may create some noise files in the directory such as "sandbox*" directories or random data files. These can be deleted after the execution is over.
 
@@ -261,7 +261,7 @@ $ python generator.py -exp_type final_data -domain data_preprocessing -verified_
 
 This will create a new directory within `CHASE/code/generation_outputs` with the name `gpt-4o-mini-final` which will store the final data file: `final_data.tsv`.
 
-## IIB. Solving CHASE-Code
+## 2B. Solving CHASE-Code
 
 We will show an example of using the Llama-3.3-70B model to solve the CHASE-Code examples.
 
@@ -280,7 +280,7 @@ $ python solver.py -data chase_code_dp.tsv -prompt_type basic -model_type vllm -
 
 The output logs and predictions will be stored in the `outputs/chase_code_llama` folder.
 
-## IIC. Viewing CHASE-Code
+## 2C. Viewing CHASE-Code
 
 If you want to manually review say the "5th" example from CHASE-Code,
 
@@ -294,7 +294,7 @@ This will create a new directory `readable_data` with a txt file where you will 
 
 
 
-## IIIA. Generating CHASE-Math
+## 3A. Generating CHASE-Math
 
 ### Generate problems
 
@@ -318,7 +318,7 @@ $ python generator.py -exp_type problem_extend -prompt_type problem_extend -mode
 
 This will create a directory in `CHASE/math/generation_outputs` with the name `gpt-4o-mini-problems` which will store the model generated problems in `problems.tsv` file.
 
-## IIB. Solving CHASE-Math
+## 3B. Solving CHASE-Math
 
 We will show an example of using the Llama-3.3-70B model to solve the CHASE-Math examples.
 
